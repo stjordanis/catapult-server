@@ -43,7 +43,7 @@ namespace catapult { namespace model {
 			// Arrange:
 			auto expectedSize = baseSize + sizeof(uint32_t);
 
-#define FIELD(X) expectedSize += sizeof(T::X);
+#define FIELD(X) expectedSize += SizeOf32<decltype(T::X)>();
 			TRANSACTION_FIELDS
 #undef FIELD
 
@@ -80,7 +80,8 @@ namespace catapult { namespace model {
 	namespace {
 		struct MultisigAccountModificationTransactionTraits {
 			static auto GenerateEntityWithAttachments(uint8_t numAdditions, uint8_t numDeletions) {
-				uint32_t entitySize = sizeof(TransactionType) + (numAdditions + numDeletions) * UnresolvedAddress::Size;
+				uint32_t entitySize = SizeOf32<TransactionType>()
+						+ (numAdditions + numDeletions) * static_cast<uint32_t>(UnresolvedAddress::Size);
 				auto pTransaction = utils::MakeUniqueWithSize<TransactionType>(entitySize);
 				pTransaction->Size = entitySize;
 				pTransaction->AddressAdditionsCount = numAdditions;

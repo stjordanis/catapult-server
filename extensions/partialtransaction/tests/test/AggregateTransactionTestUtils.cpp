@@ -29,7 +29,7 @@
 namespace catapult { namespace test {
 
 	std::unique_ptr<model::AggregateTransaction> CreateRandomAggregateTransactionWithCosignatures(uint32_t numCosignatures) {
-		uint32_t entitySize = sizeof(model::AggregateTransaction) + 124 + numCosignatures * sizeof(model::Cosignature);
+		uint32_t entitySize = SizeOf32<model::AggregateTransaction>() + 124 + numCosignatures * SizeOf32<model::Cosignature>();
 		auto pTransaction = utils::MakeUniqueWithSize<model::AggregateTransaction>(entitySize);
 		FillWithRandomData({ reinterpret_cast<uint8_t*>(pTransaction.get()), entitySize });
 
@@ -59,7 +59,8 @@ namespace catapult { namespace test {
 		using TransactionType = model::AggregateTransaction;
 
 		uint32_t transactionSize = sizeof(mocks::EmbeddedMockTransaction);
-		uint32_t entitySize = sizeof(TransactionType) + numTransactions * (transactionSize + utils::GetPaddingSize(transactionSize, 8));
+		uint32_t entitySize = SizeOf32<TransactionType>()
+				+ numTransactions * (transactionSize + utils::GetPaddingSize(transactionSize, 8));
 
 		AggregateTransactionWrapper wrapper;
 		auto pTransaction = utils::MakeUniqueWithSize<TransactionType>(entitySize);

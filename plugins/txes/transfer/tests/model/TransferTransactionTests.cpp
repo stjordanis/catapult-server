@@ -40,7 +40,7 @@ namespace catapult { namespace model {
 			// Arrange:
 			auto expectedSize = baseSize + sizeof(uint32_t) + sizeof(uint8_t);
 
-#define FIELD(X) expectedSize += sizeof(T::X);
+#define FIELD(X) expectedSize += SizeOf32<decltype(T::X)>();
 			TRANSACTION_FIELDS
 #undef FIELD
 
@@ -77,7 +77,7 @@ namespace catapult { namespace model {
 	namespace {
 		struct TransferTransactionTraits {
 			static auto GenerateEntityWithAttachments(uint8_t numMosaics, uint16_t messageSize) {
-				uint32_t entitySize = sizeof(TransferTransaction) + messageSize + numMosaics * sizeof(Mosaic);
+				uint32_t entitySize = SizeOf32<TransferTransaction>() + messageSize + numMosaics * SizeOf32<Mosaic>();
 				auto pTransaction = utils::MakeUniqueWithSize<TransferTransaction>(entitySize);
 				pTransaction->Size = entitySize;
 				pTransaction->MosaicsCount = numMosaics;

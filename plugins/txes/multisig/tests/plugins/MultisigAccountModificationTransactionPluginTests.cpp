@@ -41,7 +41,7 @@ namespace catapult { namespace plugins {
 		template<typename TTraits>
 		auto CreateTransactionWithModifications(uint8_t numAdditions, uint8_t numDeletions) {
 			using TransactionType = typename TTraits::TransactionType;
-			uint32_t entitySize = sizeof(TransactionType) + (numAdditions + numDeletions) * Address::Size;
+			uint32_t entitySize = SizeOf32<TransactionType>() + (numAdditions + numDeletions) * static_cast<uint32_t>(Address::Size);
 			auto pTransaction = utils::MakeUniqueWithSize<TransactionType>(entitySize);
 			test::FillWithRandomData({ reinterpret_cast<uint8_t*>(pTransaction.get()), entitySize });
 

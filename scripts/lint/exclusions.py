@@ -9,7 +9,10 @@ SKIP_FILES = (
     re.compile(r'src.catapult.model.EntityType.cpp'),
     re.compile(r'src.catapult.model.ReceiptType.cpp'),
     re.compile(r'src.catapult.validators.ValidationResult.cpp'),
-    re.compile(r'tools.statusgen.main.cpp')
+    re.compile(r'tools.statusgen.main.cpp'),
+
+    # include only
+    re.compile(r'src.catapult.crypto.WrapperEd25519.h')
 )
 
 NAMESPACES_FALSEPOSITIVES = (

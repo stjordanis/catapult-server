@@ -60,19 +60,19 @@ namespace catapult { namespace io {
 
 			auto offset = 0u;
 			EXPECT_EQ(transactionInfo.EntityHash, reinterpret_cast<const Hash256&>(buffer[offset]));
-			offset += Hash256::Size;
+			offset += static_cast<uint32_t>(Hash256::Size);
 
 			EXPECT_EQ(transactionInfo.MerkleComponentHash, reinterpret_cast<const Hash256&>(buffer[offset]));
-			offset += Hash256::Size;
+			offset += static_cast<uint32_t>(Hash256::Size);
 
 			ASSERT_EQ(expectedAddressCount, reinterpret_cast<uint64_t&>(buffer[offset]));
-			offset += sizeof(uint64_t);
+			offset += SizeOf32<uint64_t>();
 
 			if (0 != expectedAddressSize) {
 				for (const auto& address : *transactionInfo.OptionalExtractedAddresses) {
 					EXPECT_EQ(address, reinterpret_cast<const UnresolvedAddress&>(buffer[offset]))
 							<< "address at offset " << offset;
-					offset += Address::Size;
+					offset += static_cast<uint32_t>(Address::Size);
 				}
 			}
 
@@ -110,17 +110,17 @@ namespace catapult { namespace io {
 			std::vector<uint8_t> buffer(2 * Hash256::Size + sizeof(uint64_t) + addresses.size() * Address::Size + 140);
 			auto offset = 0u;
 			std::memcpy(buffer.data() + offset, &entityHash, Hash256::Size);
-			offset += Hash256::Size;
+			offset += static_cast<uint32_t>(Hash256::Size);
 
 			std::memcpy(buffer.data() + offset, &merkleComponentHash, Hash256::Size);
-			offset += Hash256::Size;
+			offset += static_cast<uint32_t>(Hash256::Size);
 
 			std::memcpy(buffer.data() + offset, &addressCount, sizeof(uint64_t));
-			offset += sizeof(uint64_t);
+			offset += SizeOf32<uint64_t>();
 
 			for (const auto& address : addresses) {
 				std::memcpy(buffer.data() + offset, &address, Address::Size);
-				offset += Address::Size;
+				offset += static_cast<uint32_t>(Address::Size);
 			}
 
 			std::memcpy(buffer.data() + offset, pTransaction.get(), pTransaction->Size);

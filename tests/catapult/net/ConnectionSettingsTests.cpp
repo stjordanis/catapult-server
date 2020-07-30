@@ -64,12 +64,12 @@ namespace catapult { namespace net {
 		auto settings = ConnectionSettings();
 		uint16_t callbackMask = 0x0000;
 		settings.SslOptions.ContextSupplier = [&callbackMask]() -> boost::asio::ssl::context& {
-			callbackMask += 0x01;
+			callbackMask = static_cast<uint16_t>(callbackMask + 0x01);
 			CATAPULT_THROW_RUNTIME_ERROR("context supplier error");
 		};
 		settings.SslOptions.VerifyCallbackSupplier = [&callbackMask]() {
 			return [&callbackMask](const auto&) {
-				callbackMask += 0x0100;
+				callbackMask = static_cast<uint16_t>(callbackMask + 0x0100);
 				return true;
 			};
 		};
