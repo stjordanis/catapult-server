@@ -27,7 +27,7 @@ namespace catapult { namespace observers {
 
 	namespace {
 		constexpr uint32_t AddDelta(uint32_t value, int8_t direction, int8_t delta) {
-			return static_cast<uint32_t>(static_cast<int32_t>(value) + direction * delta);
+			return value + static_cast<uint32_t>(direction * delta);
 		}
 	}
 

@@ -152,7 +152,6 @@ namespace catapult { namespace utils {
 
 	TEST(TEST_CLASS, CheckedCastChecksUnsignedToSignedConversions) {
 		// Assert: can convert within bounds [UInt8_Min, Int8_Max]
-		//         (static casts are needed for signed / unsigned adjustments)
 		AssertCheckedCast<uint8_t, int8_t>(UInt8_Min, static_cast<int8_t>(UInt8_Min)); // min
 		AssertCheckedCast<uint8_t, int8_t>(static_cast<uint8_t>(Int8_Max / 2), Int8_Max / 2); // min < x < max
 		AssertCheckedCast<uint8_t, int8_t>(static_cast<uint8_t>(Int8_Max), Int8_Max); // max
@@ -172,7 +171,7 @@ namespace catapult { namespace utils {
 
 		// Assert: cannot convert outside of bounds
 		AssertCheckedCastFails<int8_t, uint8_t>(Int8_Min);
-		AssertCheckedCastFails<int8_t, uint8_t>(static_cast<int8_t>(static_cast<uint8_t>(Int8_Max / 2 * 3)));
+		AssertCheckedCastFails<int8_t, uint8_t>(static_cast<int8_t>(Int8_Max / 2 * 3));
 		AssertCheckedCastFails<int8_t, uint8_t>(static_cast<int8_t>(UInt8_Max));
 	}
 

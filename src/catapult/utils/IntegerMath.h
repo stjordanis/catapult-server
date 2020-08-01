@@ -90,7 +90,7 @@ namespace catapult { namespace utils {
 	/// Calculates 2^(\a value).
 	template<typename T, typename X = std::enable_if_t<std::is_unsigned_v<T>>>
 	constexpr T Pow2(T value) {
-		return value >= GetNumBits<T>() ? 0 : static_cast<T>(static_cast<T>(1) << value);
+		return value >= GetNumBits<T>() ? 0 : static_cast<T>(1 << value);
 	}
 
 	/// Divides \a value by \a divisor and returns the remainder.

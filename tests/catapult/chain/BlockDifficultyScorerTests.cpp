@@ -170,7 +170,7 @@ namespace catapult { namespace chain {
 			for (auto i = 2u; i < 102; ++i) {
 				// Act: calculate the difficulty using current information
 				auto difficulty = CalculateDifficulty(ToRange(set), config);
-				auto difficultyDiff = static_cast<double>(static_cast<int64_t>((difficulty - previousDifficulty).unwrap()));
+				auto difficultyDiff = static_cast<double>((difficulty - previousDifficulty).unwrap());
 				auto percentageChange = difficultyDiff * 100.0 / static_cast<double>(previousDifficulty.unwrap());
 				auto percentageChangeRounded = static_cast<int32_t>(std::round(percentageChange));
 
