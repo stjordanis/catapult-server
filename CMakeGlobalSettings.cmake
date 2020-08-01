@@ -116,9 +116,6 @@ elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
 	# -Wstrict-aliasing=1 perform most paranoid strict aliasing checks
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wformat-security -Werror -Wstrict-aliasing=1")
 
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
-
 	# - Wno-maybe-uninitialized: false positives where gcc isn't sure if an uninitialized variable is used or not
 	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -Wno-maybe-uninitialized -g1 -fno-omit-frame-pointer")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-maybe-uninitialized")
@@ -126,6 +123,19 @@ elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
 	# add memset_s
 	add_definitions(-D_STDC_WANT_LIB_EXT1_=1)
 	add_definitions(-D__STDC_WANT_LIB_EXT1__=1)
+
+	# hardening
+	set(HARDENING_FLAGS "${HARDENING_FLAGS} \
+		-z noexecstack \
+		-Wl,-z,relro,-z,now \
+		-fstack-protector-all \
+		-fstack-clash-protection")
+
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -D_FORTIFY_SOURCE=2")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -D_FORTIFY_SOURCE=2")
+
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
 elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 	# - Wno-c++98-compat*: catapult is not compatible with C++98
 	# - Wno-disabled-macro-expansion: expansion of recursive macro is required for boost logging macros
@@ -143,10 +153,23 @@ elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 		-Wno-switch-enum \
 		-Wno-weak-vtables")
 
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g1")
+
+	# clang only hardening
+	if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+		set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+		# set(HARDENING_FLAGS "${HARDENING_FLAGS} -fsanitize=cfi -fsanitize=safe-stack")
+	endif()
+endif()
+
+if(NOT MSVC)
+	# visibility
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
 
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g1")
+	# hardening
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${HARDENING_FLAGS}")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${HARDENING_FLAGS}")
 endif()
 
 # set runpath for built binaries on linux
