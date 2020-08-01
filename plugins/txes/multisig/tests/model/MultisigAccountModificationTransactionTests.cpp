@@ -80,8 +80,8 @@ namespace catapult { namespace model {
 	namespace {
 		struct MultisigAccountModificationTransactionTraits {
 			static auto GenerateEntityWithAttachments(uint8_t numAdditions, uint8_t numDeletions) {
-				uint32_t entitySize = SizeOf32<TransactionType>()
-						+ (numAdditions + numDeletions) * static_cast<uint32_t>(UnresolvedAddress::Size);
+				uint32_t addressesSize = (numAdditions + numDeletions) * static_cast<uint32_t>(UnresolvedAddress::Size);
+				uint32_t entitySize = SizeOf32<TransactionType>() + addressesSize;
 				auto pTransaction = utils::MakeUniqueWithSize<TransactionType>(entitySize);
 				pTransaction->Size = entitySize;
 				pTransaction->AddressAdditionsCount = numAdditions;

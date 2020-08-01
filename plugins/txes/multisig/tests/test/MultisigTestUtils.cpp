@@ -50,7 +50,7 @@ namespace catapult { namespace test {
 			const std::vector<UnresolvedAddress>& addressAdditions,
 			const std::vector<UnresolvedAddress>& addressDeletions) {
 		using TransactionType = model::EmbeddedMultisigAccountModificationTransaction;
-		uint32_t entitySize = SizeOf32<TransactionType>();
+		uint32_t entitySize = sizeof(TransactionType);
 		entitySize += static_cast<uint32_t>((addressAdditions.size() + addressDeletions.size()) * UnresolvedAddress::Size);
 
 		auto pTransaction = utils::MakeUniqueWithSize<TransactionType>(entitySize);

@@ -58,21 +58,21 @@ namespace catapult { namespace io {
 			auto expectedSize = 2u * Hash256::Size + sizeof(uint64_t) + expectedAddressSize + 132;
 			ASSERT_EQ(expectedSize, buffer.size());
 
-			auto offset = 0u;
+			size_t offset = 0;
 			EXPECT_EQ(transactionInfo.EntityHash, reinterpret_cast<const Hash256&>(buffer[offset]));
-			offset += static_cast<uint32_t>(Hash256::Size);
+			offset += Hash256::Size;
 
 			EXPECT_EQ(transactionInfo.MerkleComponentHash, reinterpret_cast<const Hash256&>(buffer[offset]));
-			offset += static_cast<uint32_t>(Hash256::Size);
+			offset += Hash256::Size;
 
 			ASSERT_EQ(expectedAddressCount, reinterpret_cast<uint64_t&>(buffer[offset]));
-			offset += SizeOf32<uint64_t>();
+			offset += sizeof(uint64_t);
 
 			if (0 != expectedAddressSize) {
 				for (const auto& address : *transactionInfo.OptionalExtractedAddresses) {
 					EXPECT_EQ(address, reinterpret_cast<const UnresolvedAddress&>(buffer[offset]))
 							<< "address at offset " << offset;
-					offset += static_cast<uint32_t>(Address::Size);
+					offset += Address::Size;
 				}
 			}
 
@@ -108,19 +108,19 @@ namespace catapult { namespace io {
 			auto pTransaction = test::GenerateRandomTransactionWithSize(140);
 
 			std::vector<uint8_t> buffer(2 * Hash256::Size + sizeof(uint64_t) + addresses.size() * Address::Size + 140);
-			auto offset = 0u;
+			size_t offset = 0;
 			std::memcpy(buffer.data() + offset, &entityHash, Hash256::Size);
-			offset += static_cast<uint32_t>(Hash256::Size);
+			offset += Hash256::Size;
 
 			std::memcpy(buffer.data() + offset, &merkleComponentHash, Hash256::Size);
-			offset += static_cast<uint32_t>(Hash256::Size);
+			offset += Hash256::Size;
 
 			std::memcpy(buffer.data() + offset, &addressCount, sizeof(uint64_t));
-			offset += SizeOf32<uint64_t>();
+			offset += sizeof(uint64_t);
 
 			for (const auto& address : addresses) {
 				std::memcpy(buffer.data() + offset, &address, Address::Size);
-				offset += static_cast<uint32_t>(Address::Size);
+				offset += Address::Size;
 			}
 
 			std::memcpy(buffer.data() + offset, pTransaction.get(), pTransaction->Size);

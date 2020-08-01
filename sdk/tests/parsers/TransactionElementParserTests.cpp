@@ -27,7 +27,8 @@ namespace catapult { namespace parsers {
 #define TEST_CLASS TransactionElementParserTests
 
 	namespace {
-		constexpr uint32_t Transaction_Size = sizeof(mocks::MockTransaction);
+		constexpr auto Transaction_Size = SizeOf32<mocks::MockTransaction>();
+		constexpr auto Hash_Size = static_cast<uint32_t>(Hash256::Size);
 	}
 
 	// region TryParseTransactionElements
@@ -91,12 +92,10 @@ namespace catapult { namespace parsers {
 
 	namespace {
 		auto CreatePacketWithHashesAndEntities(uint32_t numHashes, uint32_t numEntities) {
-			uint32_t payloadSize = SizeOf32<uint32_t>()
-					+ numHashes * static_cast<uint32_t>(Hash256::Size)
-					+ numEntities * Transaction_Size;
+			uint32_t payloadSize = SizeOf32<uint32_t>() + numHashes * Hash_Size + numEntities * Transaction_Size;
 			auto pPacket = ionet::CreateSharedPacket<ionet::Packet>(payloadSize);
 			test::FillWithRandomData({ pPacket->Data(), pPacket->Size - sizeof(ionet::PacketHeader) });
-			reinterpret_cast<uint32_t&>(*pPacket->Data()) = numHashes * static_cast<uint32_t>(Hash256::Size);
+			reinterpret_cast<uint32_t&>(*pPacket->Data()) = numHashes * Hash_Size;
 
 			// - set entity sizes
 			for (auto i = 0u; i < numEntities; ++i) {

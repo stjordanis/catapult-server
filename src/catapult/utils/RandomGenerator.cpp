@@ -19,7 +19,7 @@
 **/
 
 #include "RandomGenerator.h"
-#include "catapult/types.h"
+#include <cstring>
 
 namespace catapult { namespace utils {
 
@@ -28,7 +28,7 @@ namespace catapult { namespace utils {
 		void Fill(uint8_t* pOut, size_t count, TGenerator& generator) {
 			using GeneratorResultType = decltype(generator());
 
-			for (auto i = 0u; i < count; i += SizeOf32<GeneratorResultType>()) {
+			for (auto i = 0u; i < count; i += sizeof(GeneratorResultType)) {
 				auto randomValue = generator();
 				std::memcpy(pOut + i, &randomValue, std::min(sizeof(GeneratorResultType), count - i));
 			}

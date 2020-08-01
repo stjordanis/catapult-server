@@ -114,7 +114,7 @@ namespace catapult {
 		return N;
 	}
 
-	/// Gets the size of the specified type as a 32 byte value.
+	/// Gets the size of the specified type as an unsigned 32 bit value.
 	template<typename T>
 	constexpr uint32_t SizeOf32() {
 		return static_cast<uint32_t>(sizeof(T));

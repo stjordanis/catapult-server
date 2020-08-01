@@ -142,9 +142,8 @@ namespace catapult { namespace handlers {
 		void AssertPullResponseIsSetWhenPacketIsValid(uint32_t numRequestHashes, uint32_t numResponseTransactions) {
 			// Arrange:
 			auto packetType = PullTransactionsTraits::Packet_Type;
-			auto pPacket = test::CreateRandomPacket(
-					SizeOf32<BlockFeeMultiplier>() + numRequestHashes * SizeOf32<utils::ShortHash>(),
-					packetType);
+			auto shortHashesSize = numRequestHashes * SizeOf32<utils::ShortHash>();
+			auto pPacket = test::CreateRandomPacket(SizeOf32<BlockFeeMultiplier>() + shortHashesSize, packetType);
 			ionet::ServerPacketHandlers handlers;
 			size_t counter = 0;
 
